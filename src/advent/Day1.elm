@@ -1,4 +1,4 @@
-module Day1 where
+module Advent.Day1 where
 
 solution : String -> String
 solution input =

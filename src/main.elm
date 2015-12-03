@@ -1,6 +1,6 @@
 import Html exposing(..)
 
-import Day1
+import Advent.Day1
 
 app =
   { html = div [] [ text "abcd" ] }
