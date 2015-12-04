@@ -1,26 +1,40 @@
 import Html exposing(..)
+import Signal exposing (Address)
 
 import Advent.Day1
 
 type alias Config model action =
   { model : model
   , update : action -> model -> model
-  , view : }
+  , view : Address action -> model -> Html
+  }
 
-
-
-view : model -> Html
-view model =
+view : Address action -> model -> Html
+view address model =
   div [] [ text "abcd" ]
 
+start : Config model action -> Signal Html
+start cfg =
+  let
+    actions =
+      Signal.mailbox Nothing
 
-start : {model : model, view : model -> Html, update : action -> model -> model } -> Signal Html
-start m v u =
-  let view = v
-      update = u
-      model = m
+    address =
+      Signal.forwardTo actions.address Just
+
+    update' maybeAction model =
+      case maybeAction of
+        Just action ->
+          cfg.update action model
+
+        Nothing ->
+          Debug.crash "This is really wrong"
+
+    model' =
+      Signal.foldp update' cfg.model actions.signal
+
   in
-    Signal.map view 
+    Signal.map (cfg.view address) model'
 
 
 
