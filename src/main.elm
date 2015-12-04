@@ -1,4 +1,6 @@
 import Html exposing(..)
+import Html.Events exposing(..)
+import Html.Attributes exposing(..)
 import Signal exposing (Address)
 
 import Advent.Day1
@@ -9,9 +11,42 @@ type alias Config model action =
   , view : Address action -> model -> Html
   }
 
-view : Address action -> model -> Html
-view address model =
-  div [] [ text "abcd" ]
+
+type Action 
+  = Input String
+  | Select String
+
+type alias Model 
+  = ( String, String )
+
+
+onInput : Signal.Address action -> (String -> action) -> Attribute
+onInput address contentToValue =
+  on "input" targetValue (\str -> Signal.message address (contentToValue str))
+
+update : Action -> Model -> Model
+update action model =
+  case action of
+    Input i -> ( "day1", i )
+    Select d -> ( d, "x")
+
+
+view : Address Action -> Model -> Html
+view address ( day, input ) =
+  div []
+  [ select [] 
+      [ option [] [ text "Day 1"]
+      , option [] [ text "Day 3"]
+      , option [] [ text "Day 4"]
+      , option [] [ text "Day 5"]
+      , option [] [ text "Day 6"]
+      , option [] [ text "Day 7"]
+      , option [] [ text "Day 8"]
+      , option [] [ text "Day 9"]
+      ]
+  , textarea [style [("width", "75%"), ("height", "100%")], onInput address Input] []
+  , div [ style [ ("width", "25%") ] ] [ text (day ++ input) ]
+  ]
 
 start : Config model action -> Signal Html
 start cfg =
@@ -38,4 +73,4 @@ start cfg =
 
 
 
-main = start { model = 0, view = view, update = identity }
+main = start { model = ("0", ""), view = view, update = update }
