@@ -4,6 +4,9 @@ import Html.Attributes exposing(..)
 import Signal exposing (Address)
 
 import Advent.Day1 as Day1
+import Advent.Day2 as Day2
+
+
 
 type alias Config model action =
   { model : model
@@ -35,9 +38,18 @@ update : Action -> Model -> Model
 update action model =
   case action of
     Select day -> { day = day, input = "", result = "" }
-    Input input -> { model | input = input, result = toString (Day1.solution input) }
-    
-
+    Input input -> 
+      case model.day of
+        "Day 1" -> { model | input = input, result = toString (Day1.solution input) }
+        "Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        _ -> { model | input = input, result = toString (Day1.solution input) }
+        
 
 view : Address Action -> Model -> Html
 view address { day, input, result } =
