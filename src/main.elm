@@ -5,7 +5,7 @@ import Signal exposing (Address)
 
 import Advent.Day1 as Day1
 import Advent.Day2 as Day2
-
+import Advent.Day3 as Day3
 
 
 type alias Config model action =
@@ -15,14 +15,14 @@ type alias Config model action =
   }
 
 
-type Action 
+type Action
   = Input String
   | Select String
 
 type alias Model =
   { day : String
   , input : String
-  , result : String 
+  , result : String
   }
 
 
@@ -38,30 +38,28 @@ update : Action -> Model -> Model
 update action model =
   case action of
     Select day -> { day = day, input = "", result = "" }
-    Input input -> 
+    Input input ->
       case model.day of
         "Day 1" -> { model | input = input, result = toString (Day1.solution input) }
         "Day 2" -> { model | input = input, result = toString (Day2.solution input) }
-        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        "Day 3" -> { model | input = input, result = toString (Day3.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         _ -> { model | input = input, result = toString (Day1.solution input) }
-        
+
 
 view : Address Action -> Model -> Html
 view address { day, input, result } =
-  let 
-    x = Debug.log "input" input
-    y = Debug.log "day" day
+  let
     z = Debug.log "result" result
   in
     div []
       [ h1 [] [ text "Advent of code" ]
       , div []
-        [ select [ onSelect address Select, style [ ("float", "left"), ("clear", "both") ] ] 
+        [ select [ onSelect address Select, style [ ("float", "left"), ("clear", "both") ] ]
             [ option [ selected ( day == "Day 1" ) ] [ text "Day 1"]
             , option [ selected ( day == "Day 2" ) ] [ text "Day 2"]
             , option [ selected ( day == "Day 3" ) ] [ text "Day 3"]
