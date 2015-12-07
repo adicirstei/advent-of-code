@@ -36,5 +36,8 @@ solution input =
     santaHouses = Set.fromList (visit start santaDirs)
     robotHouses = Set.fromList (visit start robotDirs)
 
+    alone = Set.fromList (visit start dirs)
+
   in
+    toString (Set.size alone) ++ "::" ++
     toString (Set.size (Set.union santaHouses robotHouses))
