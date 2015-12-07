@@ -7,6 +7,8 @@ import Advent.Day1 as Day1
 import Advent.Day2 as Day2
 import Advent.Day3 as Day3
 import Advent.Day5 as Day5
+import Advent.Day6 as Day6
+
 
 type alias Config model action =
   { model : model
@@ -44,7 +46,7 @@ update action model =
         "Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         "Day 3" -> { model | input = input, result = toString (Day3.solution input) }
         "Day 5" -> { model | input = input, result = toString (Day5.solution input) }
-        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        "Day 6" -> { model | input = input, result = toString (Day6.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
