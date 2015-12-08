@@ -69,20 +69,16 @@ matchToCommand list =
         coords = listToPairs (List.map toInt area)
         z = Debug.log "coords" coords
       in
-        NoOp
+        case coords of
+          Nothing -> NoOp
+        
+          Just c ->
+            case str of
+              Just "turn on " -> TurnOn c
+              Just "turn off " -> TurnOff c
+              Just "toggle " -> Toggle c
+              _ -> NoOp
     _ -> NoOp
-
-
-    --     if coords == Nothing then
-    --       NoOp
-    --     else
-    --       Just c ->
-    --         case str of
-    --           "turn on " -> TurnOn c
-    --           "turn off " -> TurnOff c
-    --           "toggle " -> Toggle c
-    --           _ -> NoOp
-    -- _ -> NoOp
 
 
 
