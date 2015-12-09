@@ -55,7 +55,7 @@ listToPairs list =
 match : String -> Maybe Regex.Match
 match =
   let
-    rex = Regex.regex "^([^0-9]+)(\\d+),(\\d)+ through (\\d+),(\\d+)$"
+    rex = Regex.regex "^([^0-9]+)(\\d+),(\\d+) through (\\d+),(\\d+)$"
   in
     List.head << (Regex.find (Regex.AtMost 1) rex)
 
@@ -71,7 +71,7 @@ matchToCommand list =
       in
         case coords of
           Nothing -> NoOp
-        
+
           Just c ->
             case str of
               Just "turn on " -> TurnOn c
@@ -93,33 +93,85 @@ commandFromString str =
       Just a -> matchToCommand a.submatches
 
 
-
-
 grid =
   Array.repeat 1000 (Array.repeat 1000 0)
 
-set x y v m =
-  let
-    row = Maybe.withDefault Array.empty (Array.get y m)
-    newRow = Array.set x v row
-  in
-    Array.set y newRow m
 
-get x y m =
-  let
-    row = Maybe.withDefault Array.empty (Array.get y m)
-  in
-    Maybe.withDefault 0 (Array.get x row)
+updateArea cmd ((x1,y1),(x2,y2)) m =
+  if cmd == NoOp then
+    m
+  else if y1 <= y2 then
+    updateArea cmd ((x1,y1+1),(x2,y2)) (Array.set y1 (updateLine cmd (x1, x2) (Maybe.withDefault Array.empty (Array.get y1 m))) m)
+  else
+    m
+
+updateLine cmd (x1, x2) line =
+  if cmd == NoOp then
+    line
+  else if x1 <= x2 then
+    let
+      val = Maybe.withDefault 0 (Array.get x1 line)
+      val' =
+        case cmd of
+          TurnOn _ -> 1 + val
+          TurnOff _ ->
+            if val > 0 then
+              val - 1
+            else
+              0
+          Toggle _ -> 2 + val
+          _ -> val
+    in
+      updateLine cmd (x1+1, x2) (Array.set x1 val' line)
+  else
+    line
+
+updateLine' cmd (x1, x2) line =
+  if cmd == NoOp then
+    line
+  else if x1 <= x2 then
+    let
+      val = Maybe.withDefault 0 (Array.get x1 line)
+      val' =
+        case cmd of
+          TurnOn _ -> 1
+          Toggle _ ->
+            if val == 0 then
+              1
+            else
+              0
+          TurnOff _ -> 0
+          _ -> val
+    in
+      updateLine cmd (x1+1, x2) (Array.set x1 val' line)
+  else
+    line
 
 
-switch x y m =
-  let
-    row = Maybe.withDefault Array.empty (Array.get y m)
-    v = Maybe.withDefault 0 (Array.get x row)
-    newRow = Array.set x (if v == 0 then 1 else 0) row
-  in
-    Array.set y newRow m
+batchUpdate batch m =
+  case batch of
+    (first :: rest) ->
+      let
+        cmd = commandFromString first
+        area = case cmd of
+          NoOp -> ((0,0),(-1,-1))
+          Toggle a -> a
+          TurnOn b -> b
+          TurnOff c -> c
+      in
+        batchUpdate rest (updateArea cmd area m)
+    _ ->
+      m
+
+sumLine = Array.toList >> List.sum
+
+
+sum m =
+  sumLine (Array.map sumLine m)
 
 
 solution input =
-  Ok (2, 'a')
+  let
+    lines = String.lines input
+  in
+    sum (batchUpdate lines grid)
