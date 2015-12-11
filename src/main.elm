@@ -8,7 +8,7 @@ import Advent.Day2 as Day2
 import Advent.Day3 as Day3
 import Advent.Day5 as Day5
 import Advent.Day6 as Day6
-
+import Advent.Day10 as Day10
 
 type alias Config model action =
   { model : model
@@ -49,7 +49,7 @@ update action model =
         "Day 6" -> { model | input = input, result = toString (Day6.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
         --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
-        --"Day 2" -> { model | input = input, result = toString (Day2.solution input) }
+        "Day 10" -> { model | input = input, result = toString (Day10.solution input) }
         _ -> { model | input = input, result = toString (Day1.solution input) }
 
 
@@ -71,6 +71,7 @@ view address { day, input, result } =
             , option [ selected ( day == "Day 7" ) ] [ text "Day 7"]
             , option [ selected ( day == "Day 8" ) ] [ text "Day 8"]
             , option [ selected ( day == "Day 9" ) ] [ text "Day 9"]
+            , option [ selected ( day == "Day 10" ) ] [ text "Day 10"]
             ]
         , textarea [style [("width", "75%"), ("height", "300px"), ("float", "left"), ("clear", "left")], onInput address Input, value input ] [ ]
         , div [ style [ ("width", "24%"), ("height", "300px"), ("float", "left"), ("background", "#ffa") ] ] [ text result ]
